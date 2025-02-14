@@ -1,0 +1,31 @@
+{
+  "name": "primeiroprojeto",
+  "version": "1.0.0",
+  "description": "Projeto 01",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaroJovem/primeiroProjeto.git"
+  },
+  "keywords": [
+    "express",
+    "sessaõ",
+    "nodejas",
+    "web",
+    "http"
+  ],
+  "author": "Fabricioleite Cezar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CaroJovem/primeiroProjeto/issues"
+  },
+  "homepage": "https://github.com/CaroJovem/primeiroProjeto#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
