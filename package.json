@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/CaroJovem/primeiroProjeto#readme",
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
   }
 }

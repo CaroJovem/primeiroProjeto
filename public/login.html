@@ -1,11 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Entrelinhas - Login</title>
+    <link rel="stylesheet" href="style1.css">
 </head>
 <body>
-    <h1>login</h1>
+    <header id="header">
+        <h1>Entrelinhas</h1>
+    </header>
+
+    <nav id="nav">
+        <ul>
+            <li><a class="menulateral" href="produtosanunciados.html">Produtos Anunciados</a></li>
+            <li><a class="menulateral" href="cadastro+.html">Cadastrar Novos Anúncios</a></li>
+            <li><a class="menulateral" href="login.html">Login do admnistrador</a></li>
+        </ul>
+    </nav>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <label for="username">Usuário:</label>
+            <input type="text" id="usuario" name="usuario" required>
+
+            <label for="password">Senha:</label>
+            <input type="password" id="senha" name="senha" required>
+
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
 </body>
 </html>
