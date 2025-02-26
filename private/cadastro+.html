@@ -15,13 +15,17 @@
         <ul>
             <li><a class="menulateral" href="produtosanunciados.html">Produtos Anunciados</a></li>
             <li><a class="menulateral" href="cadastro+.html">Cadastrar Novos Anúncios</a></li>
-            <li><a class="menulateral" href="login.html">Login do admnistrador</a></li>
+            <li><a class="menulateral" href="login.html">Login do administrador</a></li>
         </ul>
     </nav>
 
     <main class="conteudo2">
         <h1 id="titulodateladecadastro">Cadastre um novo produto:</h1>
-        <form class="formprod" name="cadastro-produto" action="pagina.jsp" method="post">
+        <form class="formprod" name="cadastro-produto" method="post">
+            <div class="form-group">
+                <label for="idprod">ID do produto:</label>
+                <input class="input1" type="text" id="idprod" placeholder="Digite o ID do produto..." required>
+            </div>
             <div class="form-group">
                 <label for="nomeprod">Nome do produto:</label>
                 <input class="input1" type="text" id="nomeprod" placeholder="Digite o nome do produto..." required>
@@ -46,13 +50,136 @@
                 <label for="detalhesprod">Detalhes do produto:</label>
                 <textarea class="detalhesprod" id="detalhesprod" placeholder="Informe detalhes adicionais..."></textarea>
             </div>
+            <div class="form-group">
+                <label for="edicao">Nome da edição:</label>
+                <input class="input1" type="text" id="edicao" placeholder="Digite o nome da edição..." required>
+            </div>
+            <div class="form-group">
+                <label for="idioma">Idioma:</label>
+                <input class="input1" type="text" id="idioma" placeholder="Digite o idioma do livro..." required>
+            </div>
+            <div class="form-group">
+                <label for="paginas">Número de páginas:</label>
+                <input class="input1" type="number" id="paginas" placeholder="Digite o número de páginas..." required>
+            </div>
             <div class="cadastroimg">
                 <p id="imgcadcapa">Clique aqui para inserir a imagem da capa do seu produto...</p>
+                <input type="file" id="imgprod" accept="image/*" style="display: none;">
+                <img id="imgDisplay" src="" alt="Imagem selecionada" style="max-width: 200px; margin-top: 10px; display: none;">
             </div>
             <div class="form-group">
                 <button type="submit">Cadastrar</button>
             </div>
         </form>
     </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector(".formprod");
+            const inputs = document.querySelectorAll(".input1");
+            const paginas = document.getElementById("paginas");
+            const valor = document.getElementById("valor");
+            const imgInput = document.getElementById("imgprod");
+            const imgDisplay = document.getElementById("imgDisplay");
+            const imgPlaceholder = document.getElementById("imgcadcapa");
+
+            imgPlaceholder.style.cursor = "pointer";
+
+            imgPlaceholder.addEventListener("click", function () {
+                imgInput.click();
+            });
+
+            imgInput.addEventListener("change", function () {
+                const file = imgInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imgDisplay.src = e.target.result;
+                        imgDisplay.style.display = "block";
+                        imgPlaceholder.innerHTML = "<strong>Imagem selecionada:</strong>";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (input.value.trim() === "") {
+                        isValid = false;
+                        input.style.border = "2px solid red";
+                    } else {
+                        input.style.border = "1px solid #ccc";
+                    }
+                });
+
+                if (isNaN(parseFloat(valor.value)) || parseFloat(valor.value) <= 0) {
+                    isValid = false;
+                    valor.style.border = "2px solid red";
+                } else {
+                    valor.style.border = "1px solid #ccc";
+                }
+
+                if (isNaN(parseInt(paginas.value)) || parseInt(paginas.value) <= 0) {
+                    isValid = false;
+                    paginas.style.border = "2px solid red";
+                } else {
+                    paginas.style.border = "1px solid #ccc";
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                    alert("Por favor, preencha todos os campos corretamente.");
+                }
+            });
+        });
+
+        // Frontend
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector(".formprod");
+
+            if (form) {
+                form.addEventListener("submit", async function (event) {
+                    event.preventDefault();
+
+                    const produto = {
+                        id: document.getElementById("idprod").value,
+                        nome: document.getElementById("nomeprod").value,
+                        valor: document.getElementById("valor").value,
+                        autor: document.getElementById("nomeaut").value,
+                        sobre: document.getElementById("sobreliv").value,
+                        dimensoes: document.getElementById("detalhesprod").value,
+                        img: document.getElementById("imgprod").files[0]?.name || "",
+                        edicao: document.getElementById("edicao").value,
+                        idioma: document.getElementById("idioma").value,
+                        paginas: document.getElementById("paginas").value
+                    };
+
+                    try {
+                        const response = await fetch("/api/produtos", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(produto),
+                        });
+
+                        if (response.ok) {
+                            alert("Produto cadastrado com sucesso!");
+                            form.reset();
+                        } else {
+                            alert("Erro ao cadastrar produto. Tente novamente.");
+                        }
+                    } catch (erro) {
+                        console.error("Erro ao gravar produto:", erro);
+                        alert("Erro ao cadastrar produto. Tente novamente.");
+                    }
+                });
+            } else {
+                console.error("Formulário não encontrado!");
+            }
+        });
+    </script>
 </body>
 </html>
