@@ -3,13 +3,15 @@ import autenticar from "./security/autenticar.js";
 import session from "express-session";
 import ProdutoDB from "./database/produtoDB.js";
 import Produto from "./model/produto.js";
+import rotaProduto from "./router/rotaProduto.js";
 
 const porta = 3006;
 const localhost = "0.0.0.0";
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use('/produtos', rotaProduto)
 app.use(session({
     secret: "qualquercoisa",
     resave: false,
@@ -18,31 +20,6 @@ app.use(session({
         maxAge: 1000 * 60 * 15
     }
 }));
-
-// Rota para cadastrar produtos
-app.post("/api/produtos", async (req, res) => {
-    try {
-        const produto = new Produto(
-            req.body.id,
-            req.body.nome,
-            req.body.valor,
-            req.body.autor,
-            req.body.sobre,
-            req.body.dimensoes,
-            req.body.img,
-            req.body.edicao,
-            req.body.idioma,
-            req.body.paginas
-        );
-
-        const db = new ProdutoDB();
-        await db.gravar(produto);
-        res.status(201).json({ message: "Produto cadastrado com sucesso!" });
-    } catch (erro) {
-        console.error("Erro ao gravar produto:", erro);
-        res.status(500).json({ message: "Erro ao cadastrar produto." });
-    }
-});
 
 // Outras rotas existentes...
 app.get("/login", (requisicao, resposta) => {
@@ -75,7 +52,6 @@ app.listen(porta, localhost, () => {
 /*// Fahrenheit 451
 async function inserirFahrenheit() {
     const produto = new Produto(
-        "002",
         "Fahrenheit 451",
         "39.90",
         "Ray Bradbury",
@@ -99,7 +75,6 @@ async function inserirFahrenheit() {
 // Senhor das Moscas
 async function inserirSenhorDasMoscas() {
     const produto = new Produto(
-        "003",
         "Senhor das Moscas",
         "45.90",
         "William Golding",
@@ -123,7 +98,6 @@ async function inserirSenhorDasMoscas() {
 // Marvel Guerra Civil: Guerras Secretas
 async function inserirMarvelGuerraCivil() {
     const produto = new Produto(
-        "004",
         "Marvel Guerra Civil: Guerras Secretas",
         "99.90",
         "Alex Irvine, Stuart Moore",
@@ -147,7 +121,6 @@ async function inserirMarvelGuerraCivil() {
 // Alice Através do Espelho
 async function inserirAliceAtravésDoEspelho() {
     const produto = new Produto(
-        "005",
         "Alice Através do Espelho",
         "50.84",
         "Lewis Carroll",
@@ -183,7 +156,7 @@ async function inserirTodosProdutos() {
 inserirTodosProdutos();*/
 
 /*async function removerProduto() {
-    const produto = new Produto("001");//ID
+    const produto = new Produto("1");//ID
 
     try {
         const db = new ProdutoDB();
@@ -196,8 +169,7 @@ inserirTodosProdutos();*/
 removerProduto();*/
 
 /*async function adicionarProduto() {
-    const produto = new Produto(
-        "001", 
+    const produto = new Produto( 
         "O Senhor dos Anéis", 
         "99.90", 
         "J.R.R. Tolkien", 
@@ -220,8 +192,7 @@ removerProduto();*/
 adicionarProduto();*/
 
 /*async function atualizarProduto() {
-    const produto = new Produto(
-        "001", 
+    const produto = new Produto( 
         "O Senhor dos Anéis - Versão Estendida", 
         "109.90", 
         "J.R.R. Tolkien", 

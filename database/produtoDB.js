@@ -10,16 +10,16 @@ export default class ProdutoDB {
         try{
             const conexao = await conectar();
             const sql = `CREATE TABLE IF NOT EXISTS produto (
-                id VARCHAR(100) NOT NULL PRIMARY KEY, 
+                id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
                 nome VARCHAR(100) NOT NULL, 
-                valor VARCHAR(7) NOT NULL, 
+                valor VARCHAR(30) NOT NULL, 
                 autor VARCHAR(100) NOT NULL, 
                 sobre TEXT NOT NULL, 
                 dimensoes VARCHAR(100) NOT NULL, 
                 img VARCHAR(100) NOT NULL, 
                 edicao VARCHAR(100) NOT NULL, 
                 idioma VARCHAR(50) NOT NULL, 
-                paginas INT NOT NULL
+                paginas VARCHAR(10) NOT NULL
             )`;
             await conexao.execute(sql);
         } catch(erro) {
@@ -31,11 +31,9 @@ export default class ProdutoDB {
     async gravar(produto) {
         if (produto instanceof Produto) {
             const conexao = await conectar();
-            try {
-                const sql = `insert into produto(id, nome, valor, autor, sobre, dimensoes, img, edicao, idioma, paginas)
-                    values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                const sql = `insert into produto(nome, valor, autor, sobre, dimensoes, img, edicao, idioma, paginas)
+                    values(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
                 const parametros = [
-                    produto.id,
                     produto.nome,
                     produto.valor,
                     produto.autor,
@@ -46,17 +44,15 @@ export default class ProdutoDB {
                     produto.idioma,
                     produto.paginas
                 ];
-                await conexao.execute(sql, parametros);
-            } finally {
-                await conexao.release();
-            }
+                const resultado = await conexao.query (sql, parametros);
+                return await resultado[0].insertId;
         }
     }
 
-    async alterar(produto) {
+    async atualizar(produto) {
         if (produto instanceof Produto) {
             const conexao = await conectar();
-            const sql = `update produto set 
+            const sql = `update produto set
                 nome = ?, 
                 valor = ?, 
                 autor = ?, 
@@ -77,10 +73,10 @@ export default class ProdutoDB {
                 produto.edicao,
                 produto.idioma,
                 produto.paginas,
-                produto.id
+                produto.id // Adicionado o ID no final do array
             ];
             await conexao.execute(sql, parametros);
-            await conexao.release();
+            await conexao.release(); // Libera a conexão após a execução
         }
     }
 
@@ -116,5 +112,29 @@ export default class ProdutoDB {
             listaProdutos.push(produto);
         }
         return listaProdutos;
+    }
+    async consultarPorId(id) {
+        const conexao = await conectar();
+        const sql = `select * from produto where id = ?`;
+        const parametros = [id];
+        const [registros] = await conexao.execute(sql, parametros);
+        await conexao.release();
+        if (registros.length > 0) {
+            const registro = registros[0];
+            return new Produto(
+                registro.id,
+                registro.nome,
+                registro.valor,
+                registro.autor,
+                registro.sobre,
+                registro.dimensoes,
+                registro.img,
+                registro.edicao,
+                registro.idioma,
+                registro.paginas
+            );
+        } else {
+            return null;
+        }
     }
 }

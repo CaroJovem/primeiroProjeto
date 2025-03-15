@@ -124,21 +124,26 @@ export default class Produto {
 
     async gravar() {
         const prodDB = new ProdutoDB();
-        await prodDB.gravar(this);
+        this.id = await prodDB.gravar(this);
     }
 
-    async alterar() {
+    async atualizar() {
         const prodDB = new ProdutoDB();
-        await prodDB.alterar(this);
+        await prodDB.atualizar(this);
     }
 
     async excluir() {
         const prodDB = new ProdutoDB();
         await prodDB.excluir(this);
     }
-
-    async consultar() {
+    async consultar(termo) {
         const prodDB = new ProdutoDB();
-        return await prodDB.consultar();
+        const produtos = await prodDB.consultar(termo);
+        return produtos;
     }
+    async consultarPorId(id) {
+        const prodDB = new ProdutoDB();
+        const produto = await prodDB.consultarPorId(id);
+        return produto;
+    } 
 }
